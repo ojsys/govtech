@@ -24,6 +24,7 @@ use App\Controllers\Admin\TestimonialsController;
 use App\Controllers\Admin\TicketTypesController;
 use App\Controllers\Admin\PackagesController;
 use App\Controllers\Admin\SettingsController;
+use App\Controllers\Admin\AccountController;
 use App\Controllers\Admin\AwardsController as AdminAwardsController;
 use App\Controllers\Admin\SponsorsController as AdminSponsorsController;
 use App\Controllers\Admin\ReportsController;
@@ -142,6 +143,9 @@ $router->get('/admin/reports/passes.csv', [ReportsController::class, 'exportPass
 // Settings
 $router->get('/admin/settings', [SettingsController::class, 'edit']);
 $router->post('/admin/settings', [SettingsController::class, 'update']);
+// My account — change own password
+$router->get('/admin/account', [AccountController::class, 'edit']);
+$router->post('/admin/account/password', [AccountController::class, 'updatePassword']);
 
 /* ---- Health check ---- */
 $router->get('/health', function () {

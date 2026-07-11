@@ -66,7 +66,7 @@ $ic = fn(string $p) => '<svg viewBox="0 0 24 24" fill="none" stroke="currentColo
     <div class="topbar">
       <h1><?= e($pageTitle ?? 'Admin') ?></h1>
       <div class="who">
-        <span><?= e($authUser['name'] ?? '') ?></span>
+        <a href="<?= e(url('/admin/account')) ?>" title="My account &amp; password"><?= e($authUser['name'] ?? '') ?></a>
         <span class="role"><?= e($authRole ?? '') ?></span>
         <form method="post" action="<?= e(url('/admin/logout')) ?>" style="display:inline">
           <input type="hidden" name="_token" value="<?= e($csrf) ?>">
