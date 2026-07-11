@@ -1,0 +1,15 @@
+<?php
+/**
+ * Transactional email via Brevo SMTP (PHPMailer). Copy to mail.php and fill in.
+ */
+return [
+    'driver'    => 'smtp',          // 'smtp' (Brevo) or 'mail' (PHP mail() fallback)
+    'host'      => 'smtp-relay.brevo.com',
+    'port'      => 587,
+    'encryption'=> 'tls',
+    'username'  => 'xxxxxx@smtp-brevo.com',
+    'password'  => 'CHANGE_ME',
+    'from_email'=> 'no-reply@govtechconference.ng',
+    'from_name' => 'Nigeria GovTech Conference & Awards',
+    'reply_to'  => 'info@govtechconference.ng',
+];

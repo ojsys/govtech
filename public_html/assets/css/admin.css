@@ -1,0 +1,131 @@
+/* ==========================================================================
+   Admin dashboard — Nigeria GovTech Conference & Awards
+   Shares the brand tokens with the public site; distinct utilitarian layout.
+   ========================================================================== */
+:root{
+  --ink:#07140E;--ink-2:#0B1E16;--ink-3:#102B20;
+  --green:#0C7A4D;--verdant:#16B47A;--gold:#C9A227;--gold-soft:#E4C865;
+  --parchment:#F5F2E9;--sage:#9FB3A8;--line:rgba(159,179,168,.16);
+  --display:"Fraunces",Georgia,serif;--body:"Plus Jakarta Sans",system-ui,sans-serif;--mono:"IBM Plex Mono",ui-monospace,monospace;
+  --ok:#16B47A;--warn:#E4C865;--bad:#d9534f;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body.admin{font-family:var(--body);background:var(--ink);color:#E8EFE9;-webkit-font-smoothing:antialiased;line-height:1.5}
+a{color:inherit;text-decoration:none}
+.mono{font-family:var(--mono)}
+
+/* ---- shell ---- */
+.admin-shell{display:grid;grid-template-columns:240px 1fr;min-height:100vh}
+@media(max-width:840px){.admin-shell{grid-template-columns:1fr}}
+.side{background:var(--ink-2);border-right:1px solid var(--line);padding:22px 0;position:sticky;top:0;height:100vh;overflow:auto}
+@media(max-width:840px){.side{position:static;height:auto;display:none}}
+.side .brand{display:flex;align-items:center;gap:10px;padding:0 22px 22px;border-bottom:1px solid var(--line);margin-bottom:14px}
+.side .brand svg{width:30px;height:30px}
+.side .brand b{font-family:var(--display);font-size:15px}
+.side .brand span{display:block;font-family:var(--mono);font-size:8.5px;letter-spacing:.16em;color:var(--sage);text-transform:uppercase}
+.side nav a{display:flex;align-items:center;gap:11px;padding:11px 22px;color:#bccabf;font-size:14.5px;font-weight:500;border-left:2px solid transparent}
+.side nav a:hover{background:rgba(255,255,255,.03);color:#fff}
+.side nav a.active{border-left-color:var(--gold);color:#fff;background:rgba(201,162,39,.06)}
+.side nav a svg{width:17px;height:17px;opacity:.85}
+.side .seg{font-family:var(--mono);font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--sage);padding:18px 22px 8px}
+
+.main{min-width:0}
+.topbar{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:16px 30px;border-bottom:1px solid var(--line);background:rgba(7,20,14,.6);position:sticky;top:0;z-index:10;backdrop-filter:blur(8px)}
+.topbar h1{font-family:var(--display);font-weight:600;font-size:22px}
+.topbar .who{display:flex;align-items:center;gap:14px;font-size:13px;color:var(--sage)}
+.topbar .who .role{font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--gold);border:1px solid var(--line);padding:3px 8px;border-radius:20px}
+.content{padding:30px}
+@media(max-width:560px){.content{padding:20px 16px}.topbar{padding:14px 16px}}
+
+/* ---- buttons / chips ---- */
+.btn{display:inline-flex;align-items:center;gap:8px;font-family:var(--body);font-weight:600;font-size:14px;padding:11px 18px;border-radius:3px;border:none;cursor:pointer;transition:.2s}
+.btn-gold{background:var(--gold);color:#1a1405}.btn-gold:hover{background:var(--gold-soft)}
+.btn-green{background:var(--green);color:#fff}.btn-green:hover{background:var(--verdant)}
+.btn-ghost{background:transparent;border:1px solid var(--line);color:#E8EFE9}.btn-ghost:hover{border-color:var(--gold)}
+.btn-sm{padding:7px 12px;font-size:13px}
+.btn-danger{background:transparent;border:1px solid rgba(217,83,79,.5);color:#f0a3a0}.btn-danger:hover{background:rgba(217,83,79,.12)}
+
+/* ---- cards / stat grid ---- */
+.stat-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:14px;margin-bottom:26px}
+@media(max-width:1040px){.stat-grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:560px){.stat-grid{grid-template-columns:1fr 1fr}}
+.scard{background:var(--ink-2);border:1px solid var(--line);border-radius:6px;padding:20px}
+.scard .k{font-family:var(--mono);font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--sage)}
+.scard .v{font-family:var(--display);font-size:30px;color:#fff;margin-top:8px;font-weight:600}
+.scard .v .cur{font-size:16px;color:var(--gold);vertical-align:super}
+.panel{background:var(--ink-2);border:1px solid var(--line);border-radius:6px;margin-bottom:22px;overflow:hidden}
+.panel .ph{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:16px 20px;border-bottom:1px solid var(--line)}
+.panel .ph h2{font-family:var(--display);font-size:17px;font-weight:600}
+.panel .pb{padding:6px 20px 16px}
+
+/* ---- tables ---- */
+.table{width:100%;border-collapse:collapse;font-size:14px}
+.table th{text-align:left;font-family:var(--mono);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--sage);padding:12px 12px;border-bottom:1px solid var(--line);font-weight:500}
+.table td{padding:13px 12px;border-bottom:1px solid var(--line);color:#dbe6de}
+.table tr:last-child td{border-bottom:none}
+.table tr:hover td{background:rgba(255,255,255,.02)}
+.table .num{font-family:var(--mono)}
+.tag{display:inline-block;font-family:var(--mono);font-size:10px;letter-spacing:.08em;text-transform:uppercase;padding:4px 9px;border-radius:20px;border:1px solid var(--line)}
+.tag.paid{color:#a8e6cd;border-color:rgba(22,180,122,.4);background:rgba(22,180,122,.1)}
+.tag.pending{color:var(--gold-soft);border-color:rgba(201,162,39,.4);background:rgba(201,162,39,.08)}
+.tag.failed,.tag.cancelled{color:#f0a3a0;border-color:rgba(217,83,79,.4);background:rgba(217,83,79,.08)}
+.tag.checked_in{color:#a8e6cd;border-color:rgba(22,180,122,.4)}
+.tag.valid{color:var(--sage)}
+
+/* ---- forms ---- */
+.field{margin-bottom:16px}
+.field label{display:block;font-family:var(--mono);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--sage);margin-bottom:7px}
+.field input,.field select,.field textarea{width:100%;padding:11px 13px;background:var(--ink);border:1px solid var(--line);border-radius:3px;color:#E8EFE9;font-family:var(--body);font-size:14.5px}
+.field input:focus,.field select:focus,.field textarea:focus{outline:none;border-color:var(--gold)}
+.field textarea{min-height:90px;resize:vertical}
+.field .err{color:#f0a3a0;font-size:12.5px;margin-top:6px}
+.field-row{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media(max-width:560px){.field-row{grid-template-columns:1fr}}
+.check{display:flex;align-items:center;gap:9px}.check input{width:auto}
+.form-actions{display:flex;gap:10px;margin-top:10px}
+
+/* ---- alerts ---- */
+.alert{padding:12px 16px;border-radius:4px;font-size:14px;margin-bottom:18px}
+.alert-ok{background:rgba(22,180,122,.12);border:1px solid rgba(22,180,122,.4);color:#a8e6cd}
+.alert-error{background:rgba(217,83,79,.12);border:1px solid rgba(217,83,79,.4);color:#f3b6b3}
+
+/* ---- login ---- */
+.login-wrap{min-height:100vh;display:grid;place-items:center;padding:20px;
+  background:radial-gradient(ellipse 60% 50% at 50% 20%,rgba(12,122,77,.18),transparent 60%),var(--ink)}
+.login-card{width:100%;max-width:400px;background:var(--ink-2);border:1px solid var(--line);border-radius:8px;padding:34px 30px}
+.login-card .brand{display:flex;align-items:center;gap:11px;justify-content:center;margin-bottom:8px}
+.login-card .brand svg{width:38px;height:38px}
+.login-card h1{font-family:var(--display);font-size:22px;text-align:center;font-weight:600;margin-bottom:4px}
+.login-card .sub{text-align:center;color:var(--sage);font-size:13px;margin-bottom:24px}
+
+/* ---- check-in scanner ---- */
+.scan-grid{display:grid;grid-template-columns:1.1fr .9fr;gap:22px}
+@media(max-width:840px){.scan-grid{grid-template-columns:1fr}}
+#scanVideo{width:100%;border-radius:8px;background:#000;aspect-ratio:4/3;object-fit:cover;border:1px solid var(--line)}
+.scan-verdict{border-radius:8px;padding:26px;text-align:center;border:1px solid var(--line);background:var(--ink-2);min-height:200px;display:flex;flex-direction:column;justify-content:center;transition:.2s}
+.scan-verdict.ok{background:rgba(22,180,122,.14);border-color:var(--ok)}
+.scan-verdict.already{background:rgba(201,162,39,.12);border-color:var(--warn)}
+.scan-verdict.bad{background:rgba(217,83,79,.14);border-color:var(--bad)}
+.scan-verdict .big{font-family:var(--display);font-size:26px;font-weight:600;margin-bottom:8px}
+.scan-verdict .det{color:#dbe6de;font-size:14px}
+.scan-verdict .det b{color:#fff}
+.muted{color:var(--sage);font-size:13px}
+.pager{display:flex;gap:8px;align-items:center;margin-top:16px;font-size:13px}
+.pager a{padding:7px 12px;border:1px solid var(--line);border-radius:3px}
+.pager a:hover{border-color:var(--gold)}
+.pager .cur{color:var(--sage)}
+
+/* ---- modal (ticket preview) ---- */
+.modal{position:fixed;inset:0;z-index:200;display:none}
+.modal.open{display:block}
+.modal-backdrop{position:absolute;inset:0;background:rgba(4,10,7,.72);backdrop-filter:blur(3px)}
+.modal-card{position:relative;max-width:720px;margin:6vh auto;background:var(--ink-2);border:1px solid var(--line);border-radius:10px;
+  max-height:88vh;display:flex;flex-direction:column;box-shadow:0 40px 90px -30px rgba(0,0,0,.7);animation:modalIn .2s ease}
+@keyframes modalIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+.modal-head{display:flex;align-items:center;justify-content:space-between;padding:16px 22px;border-bottom:1px solid var(--line)}
+.modal-head h3{font-family:var(--display);font-size:18px;font-weight:600}
+.modal-x{background:none;border:none;color:var(--sage);font-size:28px;line-height:1;cursor:pointer;padding:0 4px}
+.modal-x:hover{color:#fff}
+.modal-body{padding:22px;overflow:auto}
+.modal-body .loading{color:var(--sage);text-align:center;padding:30px;font-family:var(--mono);font-size:13px}
+@media(max-width:560px){.modal-card{margin:3vh 10px}}

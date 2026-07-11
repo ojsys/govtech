@@ -1,0 +1,11 @@
+User-agent: *
+Allow: /
+Disallow: /admin
+Disallow: /portal
+Disallow: /checkout
+Disallow: /payment
+Disallow: /ticket
+Disallow: /order
+Disallow: /awards/vote
+
+Sitemap: https://govtechconference.ng/sitemap.xml

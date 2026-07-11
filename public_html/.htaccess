@@ -1,0 +1,62 @@
+# ==========================================================================
+# Nigeria GovTech Conference & Awards — webroot .htaccess
+# Front-controller rewrite + HTTPS + security headers.
+# ==========================================================================
+
+Options -Indexes -MultiViews
+DirectoryIndex index.php
+
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+
+    # Force HTTPS (skip when already https; respects proxy header on shared hosts).
+    RewriteCond %{HTTPS} !=on
+    RewriteCond %{HTTP:X-Forwarded-Proto} !=https
+    RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+
+    # Serve real files/dirs directly (assets, uploads).
+    RewriteCond %{REQUEST_FILENAME} -f [OR]
+    RewriteCond %{REQUEST_FILENAME} -d
+    RewriteRule ^ - [L]
+
+    # Everything else -> front controller.
+    RewriteRule ^ index.php [L]
+</IfModule>
+
+<IfModule mod_headers.c>
+    Header always set X-Content-Type-Options "nosniff"
+    Header always set X-Frame-Options "SAMEORIGIN"
+    Header always set Referrer-Policy "strict-origin-when-cross-origin"
+    Header always set Permissions-Policy "geolocation=(), microphone=(), camera=(self), payment=(self)"
+    Header always set X-Permitted-Cross-Domain-Policies "none"
+    Header always set Cross-Origin-Opener-Policy "same-origin"
+    Header always set Cross-Origin-Resource-Policy "same-origin"
+    # HSTS — enable only once HTTPS is confirmed working on the domain.
+    Header always set Strict-Transport-Security "max-age=31536000; includeSubDomains; preload" "expr=%{HTTPS} == 'on'"
+    # CSP: allow Google Fonts + Paystack + legacy WP media; camera for the QR scanner.
+    # 'unsafe-inline' is retained for the small inline scripts/styles ported from the prototype.
+    Header always set Content-Security-Policy "default-src 'self'; img-src 'self' data: https:; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; script-src 'self' 'unsafe-inline' https://js.paystack.co; connect-src 'self' https://api.paystack.co; frame-src https://js.paystack.co https://checkout.paystack.com; form-action 'self' https://checkout.paystack.com; frame-ancestors 'self'; object-src 'none'; base-uri 'self'"
+    # Don't leak the QR/asset referrer to third parties.
+    Header always unset X-Powered-By
+    Header always unset Server
+</IfModule>
+
+# Cache static assets (immutable-ish; we cache-bust via ?v=mtime).
+<IfModule mod_expires.c>
+    ExpiresActive On
+    ExpiresByType text/css "access plus 7 days"
+    ExpiresByType application/javascript "access plus 7 days"
+    ExpiresByType image/svg+xml "access plus 7 days"
+    ExpiresByType image/png "access plus 30 days"
+    ExpiresByType image/jpeg "access plus 30 days"
+</IfModule>
+
+# Don't serve dotfiles or sensitive sources.
+<FilesMatch "(^\.|\.(env|ini|log|sql|md|sh|bak)$)">
+    Require all denied
+</FilesMatch>
+
+# Block PHP execution inside uploads (defence in depth).
+<IfModule mod_rewrite.c>
+    RewriteRule ^uploads/.*\.(php|phtml|php\d|pl|py|cgi|asp)$ - [F]
+</IfModule>

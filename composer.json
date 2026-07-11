@@ -1,0 +1,19 @@
+{
+    "name": "bpsr/govtech-conference",
+    "description": "Nigeria GovTech Conference & Awards — event platform (registration, ticketing, awards, sponsor portal).",
+    "type": "project",
+    "license": "proprietary",
+    "require": {
+        "php": ">=8.2",
+        "ext-pdo": "*",
+        "ext-json": "*",
+        "ext-mbstring": "*",
+        "ext-curl": "*",
+        "phpmailer/phpmailer": "^6.9",
+        "chillerlan/php-qrcode": "^5.0"
+    },
+    "config": {
+        "optimize-autoloader": true,
+        "sort-packages": true
+    }
+}

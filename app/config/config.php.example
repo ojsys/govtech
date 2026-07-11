@@ -1,0 +1,32 @@
+<?php
+/**
+ * Base application config. Copy to config.php and fill in.
+ * config.php is gitignored — never commit real secrets.
+ */
+return [
+    // 'production' hides errors; 'development' shows them.
+    'env'        => 'production',
+
+    // No trailing slash. Used to build absolute URLs (emails, callbacks, QR).
+    'base_url'   => 'https://govtechconference.ng',
+
+    // Active event edition. All public content is scoped to this event_id.
+    'event_id'   => 1,
+
+    // 32+ random bytes. Used for CSRF/token signing. Generate:
+    //   php -r "echo bin2hex(random_bytes(32));"
+    'app_key'    => 'CHANGE_ME_TO_A_LONG_RANDOM_STRING',
+
+    // Where uploaded public files live (speaker/sponsor images).
+    'uploads_dir' => __DIR__ . '/../../public_html/uploads',
+    'uploads_url' => '/uploads',
+
+    // Writable, NOT web-accessible.
+    'storage_dir' => __DIR__ . '/../../storage',
+
+    // Old speaker/gallery photos are hotlinked from the current WP site by default.
+    'legacy_media_base' => 'https://govtechconference.ng/wp-content/uploads/',
+
+    // Session cookie name.
+    'session_name' => 'govtech_sess',
+];

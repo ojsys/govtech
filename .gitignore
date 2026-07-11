@@ -1,0 +1,25 @@
+# Secrets & config
+app/config/config.php
+app/config/database.php
+app/config/paystack.php
+.env
+
+# Dependencies
+/vendor/
+
+# Writable runtime
+/storage/logs/*
+/storage/qr/*
+/storage/backups/*
+/public_html/uploads/*
+!/storage/logs/.gitkeep
+!/storage/qr/.gitkeep
+!/storage/backups/.gitkeep
+!/public_html/uploads/.gitkeep
+
+# OS / editor
+.DS_Store
+Thumbs.db
+*.log
+.idea/
+.vscode/

@@ -1,0 +1,2 @@
+# Deny all web access to storage (logs, qr cache, generated files).
+Require all denied

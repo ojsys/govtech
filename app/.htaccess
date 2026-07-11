@@ -1,0 +1,2 @@
+# Deny all web access to the application directory (in case it sits under the webroot).
+Require all denied
