@@ -6,7 +6,7 @@ $s = $settings ?? [];
 $images = [];
 if (!empty($gallery)) {
     foreach ($gallery as $g) {
-        $images[] = ['img' => $g['image'], 'cap' => $g['caption'] ?? ''];
+        $images[] = ['img' => $g['image'], 'cap' => $g['caption'] ?? '', 'ed' => trim((string) ($g['edition'] ?? ''))];
     }
 } else {
     $base = 'https://govtechconference.ng/wp-content/uploads/2025/07/';
@@ -15,10 +15,11 @@ if (!empty($gallery)) {
         'GovTech-2025-07-13-at-08.48.10-1.jpeg', 'GovTech-2025-07-13-at-08.48.11-2.jpeg',
         'GovTech-2025-07-13-at-08.47.35-1-1024x683.jpeg',
     ] as $f) {
-        $images[] = ['img' => $base . $f, 'cap' => ''];
+        $images[] = ['img' => $base . $f, 'cap' => '', 'ed' => ''];
     }
 }
 $galLayout = ['wide tall', '', '', 'wide', ''];
+$editions = $galEditions ?? [];
 ?>
 <section class="section" style="padding-top:0">
   <div class="wrap">
@@ -38,7 +39,8 @@ $galLayout = ['wide tall', '', '', 'wide', ''];
         </div>
       </div>
       <div class="about-visual reveal d2">
-        <img src="https://govtechconference.ng/wp-content/uploads/2025/07/GovTech-2025-07-13-at-08.47.35-1-1024x683.jpeg" alt="Conference hall" onerror="this.style.display='none'">
+        <?php $aboutImg = content_image('about_image') ?: 'https://govtechconference.ng/wp-content/uploads/2025/07/GovTech-2025-07-13-at-08.47.35-1-1024x683.jpeg'; ?>
+        <img src="<?= e($aboutImg) ?>" alt="Conference hall" onerror="this.style.display='none'">
         <div class="tag">Banquet Hall · <b>Presidential Villa, Abuja</b></div>
       </div>
     </div>
@@ -71,12 +73,20 @@ $galLayout = ['wide tall', '', '', 'wide', ''];
 <section class="section gallery" style="padding-top:0">
   <div class="wrap">
     <div class="sec-head reveal"><span class="eyebrow">In pictures</span><h2>Moments from the floor.</h2></div>
-    <div class="gal-grid">
+    <?php if (count($editions) > 1): ?>
+    <div class="gal-tabs reveal" role="tablist" aria-label="Filter gallery by edition">
+      <button class="gal-tab active" type="button" data-ed="*">All</button>
+      <?php foreach ($editions as $ed): ?>
+        <button class="gal-tab" type="button" data-ed="<?= e($ed) ?>"><?= e($ed) ?></button>
+      <?php endforeach; ?>
+    </div>
+    <?php endif; ?>
+    <div class="gal-grid" id="galGrid">
       <?php foreach ($images as $i => $g):
         $cls = $galLayout[$i % count($galLayout)];
         $src = preg_match('#^https?://#', $g['img']) ? $g['img'] : (rtrim((string) \Config::get('app.uploads_url', '/uploads'), '/') . '/' . ltrim($g['img'], '/'));
       ?>
-      <div class="gal <?= e($cls) ?> reveal d<?= (int) ($i % 3) ?>"><img src="<?= e($src) ?>" alt="<?= e($g['cap']) ?>" loading="lazy" onerror="this.parentNode.style.background='linear-gradient(160deg,#102B20,#0B1E16)'"></div>
+      <div class="gal <?= e($cls) ?> reveal d<?= (int) ($i % 3) ?>" data-edition="<?= e($g['ed']) ?>"><img src="<?= e($src) ?>" alt="<?= e($g['cap']) ?>" loading="lazy" onerror="this.parentNode.style.background='linear-gradient(160deg,#102B20,#0B1E16)'"></div>
       <?php endforeach; ?>
     </div>
     <div style="margin-top:40px" class="reveal">

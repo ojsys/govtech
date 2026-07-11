@@ -174,4 +174,75 @@
       };
     }
   })();
+
+  /* ---------- speaker detail modal ---------- */
+  (function () {
+    var modal = document.getElementById('spkModal');
+    if (!modal) return;
+    var img = document.getElementById('spkModalImg');
+    var fb = document.getElementById('spkModalFallback');
+    var nameEl = document.getElementById('spkModalName');
+    var roleEl = document.getElementById('spkModalRole');
+    var bioEl = document.getElementById('spkModalBio');
+    var lastFocus = null;
+
+    function open(card) {
+      var name = card.getAttribute('data-name') || '';
+      var role = card.getAttribute('data-role') || '';
+      var photo = card.getAttribute('data-photo') || '';
+      var initials = card.getAttribute('data-initials') || '';
+      var bio = card.getAttribute('data-bio') || '';
+      nameEl.textContent = name;
+      roleEl.textContent = role;
+      roleEl.style.display = role ? '' : 'none';
+      bioEl.textContent = bio || 'Full profile coming soon.';
+      if (photo) {
+        img.src = photo; img.alt = name; img.hidden = false; fb.hidden = true;
+      } else {
+        fb.textContent = initials; fb.hidden = false; img.hidden = true;
+      }
+      lastFocus = document.activeElement;
+      modal.classList.add('open');
+      modal.setAttribute('aria-hidden', 'false');
+      document.body.style.overflow = 'hidden';
+    }
+    function close() {
+      modal.classList.remove('open');
+      modal.setAttribute('aria-hidden', 'true');
+      document.body.style.overflow = '';
+      img.src = '';
+      if (lastFocus && lastFocus.focus) lastFocus.focus();
+    }
+    document.querySelectorAll('.spk[role="button"]').forEach(function (card) {
+      card.addEventListener('click', function () { open(card); });
+      card.addEventListener('keydown', function (e) {
+        if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); open(card); }
+      });
+    });
+    modal.querySelectorAll('[data-close]').forEach(function (el) {
+      el.addEventListener('click', close);
+    });
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape' && modal.classList.contains('open')) close();
+    });
+  })();
+
+  /* ---------- gallery edition filter ---------- */
+  (function () {
+    var tabs = document.querySelectorAll('.gal-tabs .gal-tab');
+    var grid = document.getElementById('galGrid');
+    if (!tabs.length || !grid) return;
+    var items = grid.querySelectorAll('.gal');
+    tabs.forEach(function (tab) {
+      tab.addEventListener('click', function () {
+        tabs.forEach(function (t) { t.classList.remove('active'); });
+        tab.classList.add('active');
+        var ed = tab.getAttribute('data-ed');
+        items.forEach(function (it) {
+          var show = ed === '*' || it.getAttribute('data-edition') === ed;
+          it.style.display = show ? '' : 'none';
+        });
+      });
+    });
+  })();
 })();

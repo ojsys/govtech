@@ -22,10 +22,11 @@ final class PageController extends Controller
     public function about(Request $request, array $args = []): void
     {
         $this->render('pages/about', [
-            'pageTitle' => 'About',
-            'event'     => Event::current(),
-            'settings'  => Setting::all(),
-            'gallery'   => Gallery::forEvent(),
+            'pageTitle'   => 'About',
+            'event'       => Event::current(),
+            'settings'    => Setting::all(),
+            'gallery'     => Gallery::all(),
+            'galEditions' => Gallery::editions(),
         ]);
     }
 

@@ -49,6 +49,7 @@ CREATE TABLE IF NOT EXISTS gallery (
   event_id INT,
   image VARCHAR(255),
   caption VARCHAR(255),
+  edition VARCHAR(40) DEFAULT NULL,
   sort INT DEFAULT 0,
   FOREIGN KEY (event_id) REFERENCES events(id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;

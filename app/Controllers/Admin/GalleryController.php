@@ -7,6 +7,7 @@ use App\Core\Csrf;
 use App\Core\Request;
 use App\Core\Upload;
 use App\Models\Audit;
+use App\Models\Event;
 use App\Models\Gallery;
 
 final class GalleryController extends AdminController
@@ -16,8 +17,10 @@ final class GalleryController extends AdminController
     public function index(Request $request, array $args = []): void
     {
         $this->render('admin/gallery', [
-            'pageTitle' => 'Gallery',
-            'images'    => Gallery::allForAdmin(),
+            'pageTitle'      => 'Gallery',
+            'images'         => Gallery::allForAdmin(),
+            'editions'       => Gallery::editions(),
+            'currentEdition' => (string) (Event::current()['edition'] ?? ''),
         ]);
     }
 
@@ -27,6 +30,7 @@ final class GalleryController extends AdminController
         Csrf::verify($request);
 
         $caption = $request->str('caption');
+        $edition = $request->str('edition');
         $entries = $this->normalizeFiles($_FILES['images'] ?? []);
         if ($entries === []) {
             flash('error', 'Please choose at least one image to upload.');
@@ -40,7 +44,7 @@ final class GalleryController extends AdminController
             try {
                 $name = Upload::image($entry, 'gal');
                 if ($name) {
-                    Gallery::create($name, $caption, $sort++);
+                    Gallery::create($name, $caption, $sort++, $edition);
                     $added++;
                 }
             } catch (\RuntimeException $e) {
@@ -64,7 +68,7 @@ final class GalleryController extends AdminController
         Csrf::verify($request);
         $id = (int) ($args['id'] ?? 0);
         if (Gallery::find($id)) {
-            Gallery::updateMeta($id, $request->str('caption'), $request->int('sort'));
+            Gallery::updateMeta($id, $request->str('caption'), $request->int('sort'), $request->str('edition'));
             Audit::log('update', 'gallery', $id);
             flash('ok', 'Image updated.');
         }

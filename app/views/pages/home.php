@@ -93,7 +93,8 @@ $wmk = '<svg class="wmk" viewBox="0 0 100 100" fill="none"><circle cx="50" cy="5
         </div>
       </div>
       <div class="about-visual reveal d2">
-        <img src="https://govtechconference.ng/wp-content/uploads/2025/07/GovTech-2025-07-13-at-08.47.35-1-1024x683.jpeg" alt="Conference hall" onerror="this.style.display='none'">
+        <?php $aboutImg = content_image('about_image') ?: 'https://govtechconference.ng/wp-content/uploads/2025/07/GovTech-2025-07-13-at-08.47.35-1-1024x683.jpeg'; ?>
+        <img src="<?= e($aboutImg) ?>" alt="Conference hall" onerror="this.style.display='none'">
         <div class="tag">Banquet Hall · <b>Presidential Villa, Abuja</b></div>
       </div>
     </div>
@@ -135,8 +136,15 @@ $wmk = '<svg class="wmk" viewBox="0 0 100 100" fill="none"><circle cx="50" cy="5
       <?php foreach ($speakers as $i => $sp):
         $photo = Speaker::photoUrl($sp['photo'] ?? '');
         $roleLine = trim(($sp['role'] ?? '') . (!empty($sp['organization']) ? ', ' . $sp['organization'] : ''), ', ');
+        $bio = trim((string) ($sp['bio'] ?? ''));
       ?>
-      <div class="spk reveal d<?= (int) ($i % 4) ?>">
+      <div class="spk reveal d<?= (int) ($i % 4) ?>" role="button" tabindex="0"
+           aria-label="View details for <?= e($sp['name']) ?>"
+           data-name="<?= e($sp['name']) ?>"
+           data-role="<?= e($roleLine) ?>"
+           data-photo="<?= e($photo) ?>"
+           data-initials="<?= e(Speaker::initials($sp['name'])) ?>"
+           data-bio="<?= e($bio) ?>">
         <?php if ($photo !== ''): ?>
           <img class="ph" src="<?= e($photo) ?>" alt="<?= e($sp['name']) ?>" loading="lazy"
                onerror="this.outerHTML='<div class=&quot;fallback&quot;><?= e(Speaker::initials($sp['name'])) ?></div>'">
@@ -147,6 +155,23 @@ $wmk = '<svg class="wmk" viewBox="0 0 100 100" fill="none"><circle cx="50" cy="5
         <div class="ov"><h4><?= e($sp['name']) ?></h4><div class="role"><?= e($roleLine) ?></div></div>
       </div>
       <?php endforeach; ?>
+    </div>
+  </div>
+
+  <!-- Speaker detail modal -->
+  <div class="spk-modal" id="spkModal" aria-hidden="true">
+    <div class="spk-modal-backdrop" data-close></div>
+    <div class="spk-modal-card" role="dialog" aria-modal="true" aria-labelledby="spkModalName">
+      <button class="spk-modal-x" type="button" data-close aria-label="Close">&times;</button>
+      <div class="spk-modal-media">
+        <img id="spkModalImg" src="" alt="" hidden>
+        <div class="spk-modal-fallback" id="spkModalFallback" hidden></div>
+      </div>
+      <div class="spk-modal-body">
+        <h3 id="spkModalName"></h3>
+        <div class="spk-modal-role" id="spkModalRole"></div>
+        <p class="spk-modal-bio" id="spkModalBio"></p>
+      </div>
     </div>
   </div>
 </section>
@@ -263,35 +288,45 @@ $wmk = '<svg class="wmk" viewBox="0 0 100 100" fill="none"><circle cx="50" cy="5
 <section class="section gallery">
   <div class="wrap">
     <div class="sec-head reveal">
-      <span class="eyebrow">Proceedings · 2024</span>
+      <span class="eyebrow">Proceedings</span>
       <h2>Moments from the floor.</h2>
     </div>
-    <div class="gal-grid">
-      <?php
-      $galLayout = ['wide tall', '', '', 'wide', ''];
-      $galImages = [];
-      if (!empty($gallery)) {
-          foreach ($gallery as $g) {
-              $galImages[] = ['img' => $g['image'], 'cap' => $g['caption'] ?? ''];
-          }
-      } else {
-          // Fallback to the approved prototype imagery until gallery rows are added in admin.
-          $base = 'https://govtechconference.ng/wp-content/uploads/2025/07/';
-          foreach ([
-              'GovTech-2025-07-13-at-08.48.10-3.jpeg',
-              'GovTech-2025-07-13-at-08.48.11-3.jpeg',
-              'GovTech-2025-07-13-at-08.48.10-1.jpeg',
-              'GovTech-2025-07-13-at-08.48.11-2.jpeg',
-              'GovTech-2025-07-13-at-08.47.35-1-1024x683.jpeg',
-          ] as $f) {
-              $galImages[] = ['img' => $base . $f, 'cap' => ''];
-          }
-      }
-      foreach ($galImages as $i => $g):
+    <?php
+    $galLayout = ['wide tall', '', '', 'wide', ''];
+    $galImages = [];
+    if (!empty($gallery)) {
+        foreach ($gallery as $g) {
+            $galImages[] = ['img' => $g['image'], 'cap' => $g['caption'] ?? '', 'ed' => trim((string) ($g['edition'] ?? ''))];
+        }
+    } else {
+        // Fallback to the approved prototype imagery until gallery rows are added in admin.
+        $base = 'https://govtechconference.ng/wp-content/uploads/2025/07/';
+        foreach ([
+            'GovTech-2025-07-13-at-08.48.10-3.jpeg',
+            'GovTech-2025-07-13-at-08.48.11-3.jpeg',
+            'GovTech-2025-07-13-at-08.48.10-1.jpeg',
+            'GovTech-2025-07-13-at-08.48.11-2.jpeg',
+            'GovTech-2025-07-13-at-08.47.35-1-1024x683.jpeg',
+        ] as $f) {
+            $galImages[] = ['img' => $base . $f, 'cap' => '', 'ed' => ''];
+        }
+    }
+    $editions = $galEditions ?? [];
+    ?>
+    <?php if (count($editions) > 1): ?>
+    <div class="gal-tabs reveal" role="tablist" aria-label="Filter gallery by edition">
+      <button class="gal-tab active" type="button" data-ed="*">All</button>
+      <?php foreach ($editions as $ed): ?>
+        <button class="gal-tab" type="button" data-ed="<?= e($ed) ?>"><?= e($ed) ?></button>
+      <?php endforeach; ?>
+    </div>
+    <?php endif; ?>
+    <div class="gal-grid" id="galGrid">
+      <?php foreach ($galImages as $i => $g):
           $cls = $galLayout[$i % count($galLayout)];
           $src = preg_match('#^https?://#', $g['img']) ? $g['img'] : (rtrim((string) \Config::get('app.uploads_url', '/uploads'), '/') . '/' . ltrim($g['img'], '/'));
       ?>
-      <div class="gal <?= e($cls) ?> reveal d<?= (int) ($i % 3) ?>"><img src="<?= e($src) ?>" alt="<?= e($g['cap']) ?>" loading="lazy" onerror="this.parentNode.style.background='linear-gradient(160deg,#102B20,#0B1E16)'"></div>
+      <div class="gal <?= e($cls) ?> reveal d<?= (int) ($i % 3) ?>" data-edition="<?= e($g['ed']) ?>"><img src="<?= e($src) ?>" alt="<?= e($g['cap']) ?>" loading="lazy" onerror="this.parentNode.style.background='linear-gradient(160deg,#102B20,#0B1E16)'"></div>
       <?php endforeach; ?>
     </div>
   </div>

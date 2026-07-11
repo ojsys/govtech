@@ -30,7 +30,8 @@ final class HomeController extends Controller
             'booths'       => $packages['exhibition'],
             'categories'   => AwardCategory::active(),
             'testimonials' => Testimonial::forEvent(),
-            'gallery'      => Gallery::forEvent(),
+            'gallery'      => Gallery::all(),
+            'galEditions'  => Gallery::editions(),
         ]);
     }
 }

@@ -114,6 +114,7 @@ final class Content
                     ['key' => 'about_heading', 'label' => 'Heading', 'type' => 'text', 'default' => 'A national platform for digital transformation in government.'],
                     ['key' => 'about_p1', 'label' => 'Paragraph 1', 'type' => 'textarea', 'default' => 'The Nigeria GovTech Conference & Awards convenes government officials, technology innovators, industry experts, policymakers and key stakeholders to advance digital transformation across the public sector — through keynotes, panel discussions, hands-on workshops and an awards ceremony celebrating outstanding contributions to the GovTech landscape.'],
                     ['key' => 'about_p2', 'label' => 'Paragraph 2', 'type' => 'textarea', 'default' => "It is where policy meets practice, and where the people building Nigeria's digital future come together."],
+                    ['key' => 'about_image', 'label' => 'About image (the photo beside the text)', 'type' => 'image', 'default' => ''],
                     ['key' => 'obj1_title', 'label' => 'Objective 1 — title', 'type' => 'text', 'default' => 'Promote Digital Transformation'],
                     ['key' => 'obj1_desc', 'label' => 'Objective 1 — text', 'type' => 'textarea', 'default' => 'Drive the integration of technology across government processes to enhance efficiency and service delivery.'],
                     ['key' => 'obj2_title', 'label' => 'Objective 2 — title', 'type' => 'text', 'default' => 'Showcase Innovation'],

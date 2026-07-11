@@ -8,6 +8,9 @@ $resolve = function (string $img): string {
     return rtrim((string) \Config::get('app.uploads_url', '/uploads'), '/') . '/' . ltrim($img, '/');
 };
 ?>
+<datalist id="editions">
+  <?php foreach (($editions ?? []) as $ed): ?><option value="<?= e($ed) ?>"></option><?php endforeach; ?>
+</datalist>
 <div class="panel" style="max-width:680px">
   <div class="ph"><h2>Add photos</h2></div>
   <div class="pb">
@@ -21,8 +24,12 @@ $resolve = function (string $img): string {
         </div>
         <div class="field">
           <label>Caption (optional, applied to all)</label>
-          <input type="text" name="caption" placeholder="e.g. Opening keynote, 2024">
+          <input type="text" name="caption" placeholder="e.g. Opening keynote">
         </div>
+      </div>
+      <div class="field">
+        <label>Edition (categorises these photos, e.g. 2024)</label>
+        <input type="text" name="edition" list="editions" value="<?= e($currentEdition ?? '') ?>" placeholder="e.g. 2024">
       </div>
       <button class="btn btn-gold" type="submit">Upload to gallery</button>
     </form>
@@ -46,7 +53,11 @@ $resolve = function (string $img): string {
                 <input type="text" name="caption" value="<?= e($g['caption'] ?? '') ?>">
               </div>
               <div style="display:flex;gap:8px;align-items:flex-end">
-                <div class="field" style="margin-bottom:0;width:78px">
+                <div class="field" style="margin-bottom:0;flex:1">
+                  <label>Edition</label>
+                  <input type="text" name="edition" list="editions" value="<?= e($g['edition'] ?? '') ?>" placeholder="e.g. 2024">
+                </div>
+                <div class="field" style="margin-bottom:0;width:70px">
                   <label>Order</label>
                   <input type="number" name="sort" value="<?= (int) $g['sort'] ?>">
                 </div>
