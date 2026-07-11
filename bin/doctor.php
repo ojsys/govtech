@@ -11,7 +11,7 @@ if (PHP_SAPI !== 'cli') {
     exit("CLI only.\n");
 }
 
-require dirname(__DIR__) . '/app/core/bootstrap.php';
+require dirname(__DIR__) . '/app/Core/bootstrap.php';
 
 use App\Core\Database;
 

@@ -4,7 +4,7 @@
  */
 declare(strict_types=1);
 
-require dirname(__DIR__) . '/app/core/bootstrap.php';
+require dirname(__DIR__) . '/app/Core/bootstrap.php';
 
 use App\Core\Request;
 

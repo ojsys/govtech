@@ -101,4 +101,4 @@ if (session_status() !== PHP_SESSION_ACTIVE) {
 }
 
 /* ---- Helpers ---- */
-require APP_PATH . '/core/helpers.php';
+require APP_PATH . '/Core/helpers.php';
