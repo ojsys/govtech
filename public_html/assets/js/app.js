@@ -124,22 +124,17 @@
     var grid = document.getElementById('tkGrid');
     var bar = document.getElementById('orderBar');
     if (!grid || !bar) return;
-    var totEl = document.getElementById('orderTot');
     var cntEl = document.getElementById('orderCnt');
     var checkoutBtn = document.getElementById('checkoutBtn');
-    var fmt = function (n) { return n.toLocaleString('en-NG'); };
 
     function refresh() {
-      var total = 0, count = 0;
+      var count = 0;
       grid.querySelectorAll('.tk').forEach(function (card) {
         var q = +card.getAttribute('data-qty') || 0;
-        var price = +card.getAttribute('data-price') || 0;
-        total += q * price;
         count += q;
         var qEl = card.querySelector('.qty');
         if (qEl) qEl.textContent = q;
       });
-      totEl.textContent = fmt(total);
       cntEl.textContent = count
         ? count + ' pass' + (count > 1 ? 'es' : '') + ' selected'
         : 'No passes selected';

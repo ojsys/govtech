@@ -35,7 +35,7 @@ final class Config
 {
     private static array $cache = [];
 
-    /** dot access: Config::get('paystack.secret_key') or Config::get('app.env') */
+    /** dot access: Config::get('mail.driver') or Config::get('app.env') */
     public static function get(string $key, mixed $default = null): mixed
     {
         [$file, $path] = array_pad(explode('.', $key, 2), 2, null);

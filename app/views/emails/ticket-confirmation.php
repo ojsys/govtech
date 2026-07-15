@@ -29,15 +29,15 @@ if ($ev) {
     </div>
     <div style="background:#0B1E16;border:1px solid rgba(159,179,168,.16);border-top:none;border-radius:0 0 10px 10px;padding:28px">
       <p style="margin:0 0 14px;color:#C2D2C8">Hi <?= e($name) ?>,</p>
-      <p style="margin:0 0 8px;color:#C2D2C8">Thank you for registering. Your payment was received and your <?= count($tickets) ?> pass<?= count($tickets) > 1 ? 'es are' : ' is' ?> issued. Present the QR on each ticket at check-in — scanning it also confirms the pass is genuine.</p>
+      <p style="margin:0 0 8px;color:#C2D2C8">Thank you for registering. Admission is free and your <?= count($tickets) ?> pass<?= count($tickets) > 1 ? 'es are' : ' is' ?> issued. Present the QR on each ticket at check-in — scanning it also confirms the pass is genuine.</p>
       <table style="width:100%;border-collapse:collapse;margin:14px 0 26px">
         <tr>
-          <td style="padding:7px 0;color:#9FB3A8;font-size:12px;font-family:'Courier New',monospace">ORDER</td>
+          <td style="padding:7px 0;color:#9FB3A8;font-size:12px;font-family:'Courier New',monospace">REFERENCE</td>
           <td style="padding:7px 0;color:#ffffff;text-align:right;font-weight:bold"><?= e($order['reference']) ?></td>
         </tr>
         <tr>
-          <td style="padding:7px 0;color:#9FB3A8;font-size:12px;font-family:'Courier New',monospace;border-top:1px solid rgba(159,179,168,.16)">AMOUNT</td>
-          <td style="padding:7px 0;color:#E4C865;text-align:right;font-weight:bold;border-top:1px solid rgba(159,179,168,.16)">&#8358;<?= e(naira((int) $order['total_kobo'])) ?></td>
+          <td style="padding:7px 0;color:#9FB3A8;font-size:12px;font-family:'Courier New',monospace;border-top:1px solid rgba(159,179,168,.16)">ADMISSION</td>
+          <td style="padding:7px 0;color:#E4C865;text-align:right;font-weight:bold;border-top:1px solid rgba(159,179,168,.16)">Free</td>
         </tr>
       </table>
 

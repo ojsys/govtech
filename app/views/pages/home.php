@@ -209,20 +209,19 @@ $wmk = '<svg class="wmk" viewBox="0 0 100 100" fill="none"><circle cx="50" cy="5
     <div class="sec-head light reveal">
       <span class="eyebrow">Registration &amp; Passes</span>
       <h2>Secure your place.</h2>
-      <p>Choose a pass below. Public-sector group rates and virtual access available.</p>
+      <p>Choose a pass below. Admission is free — public-sector group and virtual access available.</p>
     </div>
 
     <div class="tk-grid" id="tkGrid">
       <?php foreach ($tickets as $i => $t):
         $perks = json_col($t['perks_json'] ?? null);
         $feat = !empty($t['featured']);
-        $naira = (int) ($t['price_kobo'] ?? 0) / 100;
       ?>
       <div class="tk <?= $feat ? 'feat' : '' ?> reveal d<?= (int) ($i % 4) ?>"
-           data-id="<?= (int) $t['id'] ?>" data-price="<?= (int) $naira ?>" data-qty="0">
+           data-id="<?= (int) $t['id'] ?>" data-qty="0">
         <?= $wmk ?><?= $feat ? '<div class="badge">Most popular</div>' : '' ?>
         <div class="tname"><?= e($t['name']) ?></div>
-        <div class="price"><span class="cur">₦</span><?= e(naira((int) $t['price_kobo'])) ?></div>
+        <div class="price">Free</div>
         <div class="per"><?= e($t['description'] ?? '') ?></div>
         <ul>
           <?php foreach ($perks as $perk): ?>
@@ -241,9 +240,9 @@ $wmk = '<svg class="wmk" viewBox="0 0 100 100" fill="none"><circle cx="50" cy="5
     <div class="order-bar" id="orderBar">
       <div class="sum">
         <div><div class="lab">Selected</div><div class="cnt" id="orderCnt">No passes selected</div></div>
-        <div><div class="lab">Total</div><div class="tot"><span style="font-size:18px">₦</span><span id="orderTot">0</span></div></div>
+        <div><div class="lab">Admission</div><div class="tot">Free</div></div>
       </div>
-      <a href="#" class="btn btn-gold" id="checkoutBtn">Proceed to Checkout <span class="arrow">→</span></a>
+      <a href="#" class="btn btn-gold" id="checkoutBtn">Register free <span class="arrow">→</span></a>
     </div>
   </div>
 </section>

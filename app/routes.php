@@ -39,11 +39,9 @@ $router->get('/contact', [PageController::class, 'contact']);
 $router->post('/contact', [PageController::class, 'contactSubmit']);
 $router->post('/newsletter/subscribe', [PageController::class, 'subscribe']);
 
-/* ---- Registration + Paystack + tickets (Phase 2) ---- */
+/* ---- Registration + free passes + tickets (Phase 2) ---- */
 $router->get('/register', [RegistrationController::class, 'show']);
 $router->post('/register', [RegistrationController::class, 'store']);
-$router->get('/checkout/callback', [PaymentController::class, 'callback']);
-$router->post('/payment/webhook', [PaymentController::class, 'webhook']);
 $router->get('/order/{reference}', [PaymentController::class, 'confirmation']);
 $router->get('/verify', [PaymentController::class, 'verifyTicket']);   // public QR target
 $router->get('/ticket/{code}/qr.png', [PaymentController::class, 'qrPng']);

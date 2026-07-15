@@ -7,16 +7,16 @@ use App\Models\Attendee;
 use App\Models\Order;
 use App\Models\Ticket;
 use App\Models\Event;
+use App\Core\Mailer;
+use App\Core\View;
 
 /**
- * Issues passes for a paid order — IDEMPOTENTLY.
+ * Issues passes for a confirmed order — IDEMPOTENTLY.
  *
- * Both the Paystack callback and the webhook can fire for the same order, so we
- * guard issuance with a single atomic UPDATE: only the call that flips the order
- * from non-paid -> paid wins and creates tickets. Everyone else is a no-op.
- *
- * Caller MUST have already verified the payment (verify-by-reference or a
- * signature-checked webhook) before invoking issue().
+ * The event is free, so registration confirms the order directly (no payment
+ * gateway). issue() still guards with a single atomic UPDATE — only the call
+ * that flips the order to 'paid' (i.e. confirmed) creates tickets; a repeated
+ * submit or refresh is a no-op, so passes are never double-issued.
  */
 final class TicketIssuer
 {
@@ -80,6 +80,33 @@ final class TicketIssuer
         self::renderQrFiles($tickets);
 
         return ['issued' => true, 'tickets' => $tickets];
+    }
+
+    /** Render + email the pass confirmation to the attendee. Safe to skip if no email. */
+    public static function sendConfirmation(int $orderId): void
+    {
+        $order = Order::find($orderId);
+        $attendee = $order ? Attendee::find((int) $order['attendee_id']) : null;
+        if (!$order || !$attendee || empty($attendee['email'])) {
+            return;
+        }
+        $tickets = Ticket::forOrder($orderId);
+
+        $view = new View();
+        $html = $view->renderPartial('emails/ticket-confirmation', [
+            'order'       => $order,
+            'attendee'    => $attendee,
+            'tickets'     => $tickets,
+            'items'       => Order::items($orderId),
+            'ticketEvent' => Event::current(),
+        ]);
+
+        (new Mailer())->send(
+            $attendee['email'],
+            Attendee::fullName($attendee),
+            'Your passes — Nigeria GovTech Conference & Awards',
+            $html
+        );
     }
 
     /** Generate + persist a QR file path for any ticket missing one. */

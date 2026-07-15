@@ -92,19 +92,6 @@ final class Order extends Model
         );
     }
 
-    public static function setAccessCode(int $orderId, string $reference, string $accessCode): void
-    {
-        Database::run(
-            'UPDATE orders SET paystack_ref = ?, paystack_access_code = ? WHERE id = ?',
-            [$reference, $accessCode, $orderId]
-        );
-    }
-
-    public static function markFailed(int $orderId): void
-    {
-        Database::run("UPDATE orders SET status = 'failed' WHERE id = ? AND status = 'pending'", [$orderId]);
-    }
-
     /* ---- Admin queries ---- */
 
     /** Paginated order list with buyer details. */

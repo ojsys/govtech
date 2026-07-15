@@ -5,13 +5,12 @@ namespace App\Controllers;
 
 use App\Core\Controller;
 use App\Core\Csrf;
-use App\Core\Paystack;
 use App\Core\RateLimit;
 use App\Core\Request;
+use App\Core\TicketIssuer;
 use App\Core\Validator;
 use App\Models\Attendee;
 use App\Models\Order;
-use App\Models\Payment;
 use App\Models\TicketType;
 use RuntimeException;
 
@@ -31,7 +30,7 @@ final class RegistrationController extends Controller
         ]);
     }
 
-    /** POST /register — validate, create order, hand off to Paystack. */
+    /** POST /register — validate, create order, and issue free passes immediately. */
     public function store(Request $request, array $args = []): void
     {
         Csrf::verify($request);
@@ -75,34 +74,25 @@ final class RegistrationController extends Controller
             return;
         }
 
-        // Create attendee + pending order (totals recomputed server-side).
+        // Create attendee + order, then issue passes right away — the event is free.
         try {
             $attendeeId = Attendee::create($data);
             $result = Order::createPending($attendeeId, $cart);
+            $order = $result['order'];
+
+            // Confirm the order and issue tickets idempotently (guards double-submit).
+            TicketIssuer::issue((int) $order['id']);
+            TicketIssuer::sendConfirmation((int) $order['id']);
         } catch (RuntimeException $e) {
             flash('error', $e->getMessage());
             redirect('/register');
-        }
-        $order = $result['order'];
-
-        // Initialize Paystack and redirect to the hosted checkout.
-        try {
-            $paystack = new Paystack();
-            $init = $paystack->initialize(
-                $data['email'],
-                (int) $order['total_kobo'],
-                $order['reference'],
-                url((string) \Config::get('paystack.callback_path', '/checkout/callback')),
-                ['order_id' => (int) $order['id'], 'order_ref' => $order['reference']]
-            );
-            Order::setAccessCode((int) $order['id'], $init['reference'] ?? $order['reference'], $init['access_code'] ?? '');
-            Payment::record((int) $order['id'], $order['reference'], (int) $order['total_kobo'], 'initialized', $init);
-            redirect($init['authorization_url']);
         } catch (\Throwable $e) {
-            error_log('Paystack init failed: ' . $e->getMessage());
-            flash('error', 'We could not start the payment. ' . (\Config::get('app.env') === 'development' ? $e->getMessage() : 'Please try again shortly.'));
+            error_log('Free registration failed: ' . $e->getMessage());
+            flash('error', 'We could not complete your registration. ' . (\Config::get('app.env') === 'development' ? $e->getMessage() : 'Please try again shortly.'));
             redirect('/register');
         }
+
+        redirect('/order/' . $order['reference']);
     }
 
     /** Parse "1:2,3:1" into [ticket_type_id => qty], keeping only active passes. */

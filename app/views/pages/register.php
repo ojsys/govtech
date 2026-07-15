@@ -11,7 +11,7 @@ $cls = fn(string $f) => isset($errors[$f]) ? ' invalid' : '';
     <div class="page-head reveal in">
       <span class="eyebrow">Registration &amp; Passes</span>
       <h1>Secure your place.</h1>
-      <p>Select your passes, tell us who's attending, and pay securely with Paystack. Group and virtual options are available.</p>
+      <p>Select your passes and tell us who's attending. Admission is free — group and virtual options are available.</p>
     </div>
 
     <?php if ($msg = flash('error')): ?>
@@ -88,13 +88,12 @@ $cls = fn(string $f) => isset($errors[$f]) ? ' invalid' : '';
 
           <div id="cartRows">
             <?php foreach ($tickets as $t):
-              $naira = (int) ((int) $t['price_kobo'] / 100);
               $qty = (int) ($cart[(int) $t['id']] ?? 0);
             ?>
-            <div class="cart-row" data-price="<?= $naira ?>">
+            <div class="cart-row">
               <div class="ci">
                 <b><?= e($t['name']) ?></b>
-                <span>₦<?= e(naira((int) $t['price_kobo'])) ?> · <?= e($t['description'] ?? '') ?></span>
+                <span>Free · <?= e($t['description'] ?? '') ?></span>
               </div>
               <div class="stepper">
                 <button type="button" data-op="-1" aria-label="Remove one">−</button>
@@ -106,14 +105,14 @@ $cls = fn(string $f) => isset($errors[$f]) ? ' invalid' : '';
           </div>
 
           <div class="summary-line">
-            <span class="lab">Total</span>
-            <span class="val">₦<span id="regTotal">0</span></span>
+            <span class="lab">Selected</span>
+            <span class="val"><span id="regCount">0</span> pass(es)</span>
           </div>
 
-          <button type="submit" class="btn btn-gold btn-block">Pay with Paystack <span class="arrow">→</span></button>
+          <button type="submit" class="btn btn-gold btn-block">Complete registration <span class="arrow">→</span></button>
           <div class="secure-note">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
-            Secured by Paystack · Cards, transfer &amp; USSD
+            Free admission · Your passes are emailed instantly
           </div>
         </div>
       </div>
@@ -124,15 +123,14 @@ $cls = fn(string $f) => isset($errors[$f]) ? ' invalid' : '';
 <script>
 (function () {
   var rows = document.querySelectorAll('#cartRows .cart-row');
-  var totalEl = document.getElementById('regTotal');
+  var countEl = document.getElementById('regCount');
   function recalc() {
-    var total = 0;
+    var count = 0;
     rows.forEach(function (row) {
-      var price = +row.getAttribute('data-price') || 0;
       var input = row.querySelector('input');
-      total += (+input.value || 0) * price;
+      count += (+input.value || 0);
     });
-    totalEl.textContent = total.toLocaleString('en-NG');
+    countEl.textContent = count;
   }
   rows.forEach(function (row) {
     var input = row.querySelector('input');

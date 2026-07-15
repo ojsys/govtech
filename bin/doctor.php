@@ -37,7 +37,7 @@ foreach (['pdo_mysql', 'curl', 'mbstring', 'gd', 'openssl', 'json', 'fileinfo'] 
 
 /* ---- Config files ---- */
 echo "\nConfiguration\n";
-foreach (['config', 'database', 'paystack', 'mail'] as $cfg) {
+foreach (['config', 'database', 'mail'] as $cfg) {
     is_file(CONFIG_PATH . "/{$cfg}.php") ? line('OK', "config: {$cfg}.php") : line('FAIL', "config: {$cfg}.php missing (copy {$cfg}.php.example)");
 }
 $env = Config::get('app.env');
@@ -47,14 +47,8 @@ $env === 'production' ? line('OK', "env = production") : line('WARN', "env = {$e
 str_starts_with($base, 'https://') ? line('OK', "base_url is HTTPS ({$base})") : line('WARN', "base_url is not HTTPS ({$base})");
 ($key !== '' && !str_contains($key, 'CHANGE_ME')) ? line('OK', 'app_key is set') : line('FAIL', 'app_key is unset/default — generate one');
 
-/* ---- Paystack + mail secrets ---- */
+/* ---- Mail secrets ---- */
 echo "\nSecrets\n";
-$psk = (string) Config::get('paystack.secret_key', '');
-if ($psk === '' || str_contains($psk, 'xxxxxx')) {
-    line('FAIL', 'Paystack secret key is a placeholder');
-} else {
-    line(str_starts_with($psk, 'sk_live_') ? 'OK' : 'WARN', 'Paystack key ' . (str_starts_with($psk, 'sk_live_') ? '(LIVE)' : '(TEST — switch to live for go-live)'));
-}
 $mailDriver = Config::get('mail.driver');
 $mailDriver === 'smtp' && !str_contains((string) Config::get('mail.password', ''), 'CHANGE_ME')
     ? line('OK', 'Mail: SMTP configured')
