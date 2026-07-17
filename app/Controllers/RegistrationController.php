@@ -16,16 +16,15 @@ use RuntimeException;
 
 final class RegistrationController extends Controller
 {
-    /** GET /register — show the pass selector + attendee form. */
+    /** GET /register — attendee form for the single free general-admission pass. */
     public function show(Request $request, array $args = []): void
     {
-        $tickets = TicketType::active();
-        $cart = $this->parseCart($request->str('cart'), $tickets);
+        $qty = max(1, min(20, (int) $request->str('qty', '1')));
 
         $this->render('pages/register', [
             'pageTitle' => 'Register',
-            'tickets'   => $tickets,
-            'cart'      => $cart,            // ticket_type_id => qty (prefill)
+            'pass'      => TicketType::primary(),
+            'qty'       => $qty,
             'errors'    => [],
         ]);
     }
@@ -40,8 +39,12 @@ final class RegistrationController extends Controller
             redirect('/register');
         }
 
-        $tickets = TicketType::active();
-        $cart = $this->collectCartFromPost($request, $tickets);
+        $pass = TicketType::primary();
+        if (!$pass) {
+            flash('error', 'Registration is not open yet. Please check back soon.');
+            redirect('/register');
+        }
+        $qty = max(1, min(20, $request->int('quantity') ?: 1));
 
         // Validate attendee details.
         $data = [
@@ -54,27 +57,27 @@ final class RegistrationController extends Controller
             'sector'       => $request->str('sector', 'other'),
             'state'        => $request->str('state'),
         ];
-        $v = new Validator($data + ['cart' => $cart === [] ? '' : '1'], [
+        $v = new Validator($data, [
             'first_name' => 'required|max:80',
             'last_name'  => 'required|max:80',
             'email'      => 'required|email|max:160',
             'phone'      => 'required|max:40',
             'sector'     => 'in:public,private,academia,other',
-            'cart'       => 'required',
-        ], ['cart' => 'Pass selection']);
+        ]);
 
         if ($v->fails()) {
             $_SESSION['_old'] = $data;
             $this->render('pages/register', [
                 'pageTitle' => 'Register',
-                'tickets'   => $tickets,
-                'cart'      => $cart,
+                'pass'      => $pass,
+                'qty'       => $qty,
                 'errors'    => $v->errors(),
             ]);
             return;
         }
 
         // Create attendee + order, then issue passes right away — the event is free.
+        $cart = [(int) $pass['id'] => $qty];
         try {
             $attendeeId = Attendee::create($data);
             $result = Order::createPending($attendeeId, $cart);
@@ -93,39 +96,5 @@ final class RegistrationController extends Controller
         }
 
         redirect('/order/' . $order['reference']);
-    }
-
-    /** Parse "1:2,3:1" into [ticket_type_id => qty], keeping only active passes. */
-    private function parseCart(string $raw, array $tickets): array
-    {
-        $valid = array_column($tickets, null, 'id');
-        $cart = [];
-        foreach (array_filter(explode(',', $raw)) as $pair) {
-            [$id, $qty] = array_pad(explode(':', $pair, 2), 2, '0');
-            $id = (int) $id;
-            $qty = max(0, min(50, (int) $qty));
-            if ($qty > 0 && isset($valid[$id])) {
-                $cart[$id] = $qty;
-            }
-        }
-        return $cart;
-    }
-
-    /** Build the cart from posted qty[ticket_type_id] inputs. */
-    private function collectCartFromPost(Request $request, array $tickets): array
-    {
-        $valid = array_column($tickets, null, 'id');
-        $posted = $_POST['qty'] ?? [];
-        $cart = [];
-        if (is_array($posted)) {
-            foreach ($posted as $id => $qty) {
-                $id = (int) $id;
-                $qty = max(0, min(50, (int) $qty));
-                if ($qty > 0 && isset($valid[$id])) {
-                    $cart[$id] = $qty;
-                }
-            }
-        }
-        return $cart;
     }
 }

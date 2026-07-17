@@ -10,7 +10,7 @@ $cls = fn(string $f) => isset($errors[$f]) ? ' invalid' : '';
     <div class="page-head reveal in">
       <span class="eyebrow">Partnership &amp; Sponsorship</span>
       <h1>Apply to sponsor or exhibit.</h1>
-      <p>Tell us about your organisation and the package you're interested in. Our partnerships team will follow up with the prospectus and next steps. <a style="color:var(--gold-soft)" href="<?= e(url('/sponsor')) ?>">See all packages →</a></p>
+      <p>Tell us about your organisation and the package you're interested in. Our partnerships team will follow up with the prospectus and next steps — or email <a style="color:var(--gold-soft)" href="mailto:<?= e(content('partnerships_email')) ?>"><?= e(content('partnerships_email')) ?></a>. <a style="color:var(--gold-soft)" href="<?= e(url('/sponsor')) ?>">See all packages →</a></p>
     </div>
 
     <?php if ($m = flash('ok')): ?><div class="alert alert-ok" style="margin-top:24px"><?= e($m) ?></div><?php endif; ?>

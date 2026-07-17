@@ -25,7 +25,7 @@ final class HomeController extends Controller
             'event'        => Event::current(),
             'settings'     => Setting::all(),
             'speakers'     => Speaker::forEvent(),
-            'tickets'      => TicketType::active(),
+            'pass'         => TicketType::primary(),
             'sponsorTiers' => $packages['sponsor'],
             'booths'       => $packages['exhibition'],
             'categories'   => AwardCategory::active(),

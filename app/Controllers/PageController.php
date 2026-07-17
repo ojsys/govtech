@@ -9,6 +9,7 @@ use App\Core\Mailer;
 use App\Core\RateLimit;
 use App\Core\Request;
 use App\Core\Validator;
+use App\Models\AgendaSession;
 use App\Models\ContactMessage;
 use App\Models\Event;
 use App\Models\Gallery;
@@ -39,6 +40,17 @@ final class PageController extends Controller
             'settings'     => Setting::all(),
             'sponsorTiers' => $packages['sponsor'],
             'booths'       => $packages['exhibition'],
+        ]);
+    }
+
+    /** GET /agenda — the public programme / running order, grouped by day. */
+    public function agenda(Request $request, array $args = []): void
+    {
+        $this->render('pages/agenda', [
+            'pageTitle' => 'Agenda',
+            'event'     => Event::current(),
+            'settings'  => Setting::all(),
+            'days'      => AgendaSession::publishedByDay(),
         ]);
     }
 

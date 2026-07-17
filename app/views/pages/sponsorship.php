@@ -63,13 +63,14 @@ $this->layout('layouts/app');
 
     <!-- CTA -->
     <div class="reveal" style="margin-top:60px;background:var(--ink-2);border:1px solid var(--line);border-radius:8px;padding:38px 34px;display:flex;align-items:center;justify-content:space-between;gap:24px;flex-wrap:wrap">
+      <?php $partnerEmail = content('partnerships_email'); ?>
       <div>
         <h2 class="serif" style="font-size:clamp(22px,3vw,30px);color:#fff;font-weight:500">Ready to partner with us?</h2>
-        <p style="color:var(--sage);margin-top:8px;max-width:520px">Tell us which tier fits your goals and our partnerships team will share the full prospectus and next steps.</p>
+        <p style="color:var(--sage);margin-top:8px;max-width:520px">Tell us which tier fits your goals and our partnerships team will share the full prospectus and next steps. Or email us directly at <a href="mailto:<?= e($partnerEmail) ?>" style="color:var(--gold-soft)"><?= e($partnerEmail) ?></a>.</p>
       </div>
       <div style="display:flex;gap:10px;flex-wrap:wrap">
         <a href="<?= e(url('/sponsor/apply')) ?>" class="btn btn-gold">Apply to sponsor <span class="arrow">→</span></a>
-        <a href="<?= e(url('/contact')) ?>" class="btn btn-ghost">Talk to partnerships</a>
+        <a href="mailto:<?= e($partnerEmail) ?>" class="btn btn-ghost">Talk to partnerships</a>
       </div>
     </div>
   </div>

@@ -27,6 +27,7 @@ use App\Controllers\Admin\SettingsController;
 use App\Controllers\Admin\AccountController;
 use App\Controllers\Admin\AwardsController as AdminAwardsController;
 use App\Controllers\Admin\SponsorsController as AdminSponsorsController;
+use App\Controllers\Admin\AgendaController as AdminAgendaController;
 use App\Controllers\Admin\ReportsController;
 
 $router = new Router();
@@ -34,6 +35,7 @@ $router = new Router();
 /* ---- Public site (Phase 1) ---- */
 $router->get('/', [HomeController::class, 'index']);
 $router->get('/about', [PageController::class, 'about']);
+$router->get('/agenda', [PageController::class, 'agenda']);
 $router->get('/sponsor', [PageController::class, 'sponsorship']);
 $router->get('/contact', [PageController::class, 'contact']);
 $router->post('/contact', [PageController::class, 'contactSubmit']);
@@ -102,6 +104,13 @@ $router->post('/admin/sponsors/{id}/confirm', [AdminSponsorsController::class, '
 $router->get('/admin/content', [ContentController::class, 'index']);
 $router->get('/admin/content/{section}', [ContentController::class, 'edit']);
 $router->post('/admin/content/{section}', [ContentController::class, 'save']);
+// Content — agenda / programme CRUD
+$router->get('/admin/agenda', [AdminAgendaController::class, 'index']);
+$router->get('/admin/agenda/create', [AdminAgendaController::class, 'create']);
+$router->post('/admin/agenda', [AdminAgendaController::class, 'store']);
+$router->get('/admin/agenda/{id}/edit', [AdminAgendaController::class, 'edit']);
+$router->put('/admin/agenda/{id}', [AdminAgendaController::class, 'update']);
+$router->post('/admin/agenda/{id}/delete', [AdminAgendaController::class, 'destroy']);
 // Content — speakers CRUD
 $router->get('/admin/speakers', [SpeakersController::class, 'index']);
 $router->get('/admin/speakers/create', [SpeakersController::class, 'create']);

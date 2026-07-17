@@ -16,6 +16,7 @@
     </a>
     <nav class="nav-links">
       <a href="<?= e(url('/about')) ?>">About</a>
+      <a href="<?= e(url('/agenda')) ?>">Agenda</a>
       <a href="<?= e(url('/#speakers')) ?>">Speakers</a>
       <a href="<?= e(url('/awards')) ?>">Awards</a>
       <a href="<?= e(url('/sponsor')) ?>">Sponsor</a>
@@ -33,6 +34,7 @@
 <div class="drawer" id="drawer">
   <button class="drawer-close" id="drawerClose" aria-label="Close menu">×</button>
   <a href="<?= e(url('/about')) ?>">About</a>
+  <a href="<?= e(url('/agenda')) ?>">Agenda</a>
   <a href="<?= e(url('/#speakers')) ?>">Speakers</a>
   <a href="<?= e(url('/awards')) ?>">Awards</a>
   <a href="<?= e(url('/sponsor')) ?>">Sponsor</a>

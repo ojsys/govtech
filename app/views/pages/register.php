@@ -2,7 +2,7 @@
 /** @var \App\Core\View $this */
 $this->layout('layouts/app');
 $errors = $errors ?? [];
-$cart = $cart ?? [];
+$qty = max(1, (int) ($qty ?? 1));
 $err = fn(string $f) => isset($errors[$f]) ? '<div class="err">' . e($errors[$f]) . '</div>' : '';
 $cls = fn(string $f) => isset($errors[$f]) ? ' invalid' : '';
 ?>
@@ -11,7 +11,7 @@ $cls = fn(string $f) => isset($errors[$f]) ? ' invalid' : '';
     <div class="page-head reveal in">
       <span class="eyebrow">Registration &amp; Passes</span>
       <h1>Secure your place.</h1>
-      <p>Select your passes and tell us who's attending. Admission is free — group and virtual options are available.</p>
+      <p>Tell us who's attending. Admission is free for all — register one pass for yourself, or several for your team.</p>
     </div>
 
     <?php if ($msg = flash('error')): ?>
@@ -81,32 +81,26 @@ $cls = fn(string $f) => isset($errors[$f]) ? ' invalid' : '';
           </div>
         </div>
 
-        <!-- Pass selector + summary -->
+        <!-- Single free pass + quantity -->
         <div class="card reveal d1">
-          <h3>Your passes</h3>
-          <p class="hint">Adjust quantities below.<?= isset($errors['cart']) ? ' <span style="color:#f0a3a0">' . e($errors['cart']) . '</span>' : '' ?></p>
+          <h3><?= e($pass['name'] ?? 'General Admission') ?></h3>
+          <p class="hint"><?= e($pass['description'] ?? 'Full access to all sessions, the exhibition and the awards gala.') ?></p>
 
-          <div id="cartRows">
-            <?php foreach ($tickets as $t):
-              $qty = (int) ($cart[(int) $t['id']] ?? 0);
-            ?>
-            <div class="cart-row">
-              <div class="ci">
-                <b><?= e($t['name']) ?></b>
-                <span>Free · <?= e($t['description'] ?? '') ?></span>
-              </div>
-              <div class="stepper">
-                <button type="button" data-op="-1" aria-label="Remove one">−</button>
-                <input type="number" name="qty[<?= (int) $t['id'] ?>]" value="<?= $qty ?>" min="0" max="50" inputmode="numeric" readonly>
-                <button type="button" data-op="1" aria-label="Add one">+</button>
-              </div>
+          <div class="cart-row">
+            <div class="ci">
+              <b>Free admission</b>
+              <span>How many passes do you need?</span>
             </div>
-            <?php endforeach; ?>
+            <div class="stepper">
+              <button type="button" data-op="-1" aria-label="Remove one">−</button>
+              <input type="number" name="quantity" id="regQty" value="<?= $qty ?>" min="1" max="20" inputmode="numeric" readonly>
+              <button type="button" data-op="1" aria-label="Add one">+</button>
+            </div>
           </div>
 
           <div class="summary-line">
-            <span class="lab">Selected</span>
-            <span class="val"><span id="regCount">0</span> pass(es)</span>
+            <span class="lab">Admission</span>
+            <span class="val">Free</span>
           </div>
 
           <button type="submit" class="btn btn-gold btn-block">Complete registration <span class="arrow">→</span></button>
@@ -122,26 +116,13 @@ $cls = fn(string $f) => isset($errors[$f]) ? ' invalid' : '';
 
 <script>
 (function () {
-  var rows = document.querySelectorAll('#cartRows .cart-row');
-  var countEl = document.getElementById('regCount');
-  function recalc() {
-    var count = 0;
-    rows.forEach(function (row) {
-      var input = row.querySelector('input');
-      count += (+input.value || 0);
-    });
-    countEl.textContent = count;
-  }
-  rows.forEach(function (row) {
-    var input = row.querySelector('input');
-    row.querySelectorAll('.stepper button').forEach(function (b) {
-      b.onclick = function () {
-        var q = (+input.value || 0) + (+b.getAttribute('data-op'));
-        input.value = Math.max(0, Math.min(50, q));
-        recalc();
-      };
-    });
+  var input = document.getElementById('regQty');
+  if (!input) return;
+  document.querySelectorAll('.stepper button').forEach(function (b) {
+    b.onclick = function () {
+      var q = (+input.value || 1) + (+b.getAttribute('data-op'));
+      input.value = Math.max(1, Math.min(20, q));
+    };
   });
-  recalc();
 })();
 </script>

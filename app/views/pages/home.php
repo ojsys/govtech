@@ -209,40 +209,28 @@ $wmk = '<svg class="wmk" viewBox="0 0 100 100" fill="none"><circle cx="50" cy="5
     <div class="sec-head light reveal">
       <span class="eyebrow">Registration &amp; Passes</span>
       <h2>Secure your place.</h2>
-      <p>Choose a pass below. Admission is free — public-sector group and virtual access available.</p>
+      <p>Admission is free for all — one pass gives you full access to both days.</p>
     </div>
 
-    <div class="tk-grid" id="tkGrid">
-      <?php foreach ($tickets as $i => $t):
-        $perks = json_col($t['perks_json'] ?? null);
-        $feat = !empty($t['featured']);
-      ?>
-      <div class="tk <?= $feat ? 'feat' : '' ?> reveal d<?= (int) ($i % 4) ?>"
-           data-id="<?= (int) $t['id'] ?>" data-qty="0">
-        <?= $wmk ?><?= $feat ? '<div class="badge">Most popular</div>' : '' ?>
-        <div class="tname"><?= e($t['name']) ?></div>
+    <?php
+      $perks = json_col($pass['perks_json'] ?? null);
+      if (!$perks) {
+          $perks = ['Full access to all sessions & keynotes', 'Exhibition floor & networking', 'Awards gala ceremony'];
+      }
+    ?>
+    <div class="tk-single reveal" style="max-width:460px;margin:0 auto">
+      <div class="tk feat">
+        <?= $wmk ?>
+        <div class="tname"><?= e($pass['name'] ?? 'General Admission') ?></div>
         <div class="price">Free</div>
-        <div class="per"><?= e($t['description'] ?? '') ?></div>
+        <div class="per"><?= e($pass['description'] ?? 'Free admission for all delegates.') ?></div>
         <ul>
           <?php foreach ($perks as $perk): ?>
             <li><?= $chk ?><span><?= e($perk) ?></span></li>
           <?php endforeach; ?>
         </ul>
-        <div class="stepper">
-          <button type="button" data-op="-1" aria-label="Remove">−</button>
-          <span class="qty">0</span>
-          <button type="button" data-op="1" aria-label="Add">+</button>
-        </div>
+        <a href="<?= e(url('/register')) ?>" class="btn btn-gold btn-block">Register free <span class="arrow">→</span></a>
       </div>
-      <?php endforeach; ?>
-    </div>
-
-    <div class="order-bar" id="orderBar">
-      <div class="sum">
-        <div><div class="lab">Selected</div><div class="cnt" id="orderCnt">No passes selected</div></div>
-        <div><div class="lab">Admission</div><div class="tot">Free</div></div>
-      </div>
-      <a href="#" class="btn btn-gold" id="checkoutBtn">Register free <span class="arrow">→</span></a>
     </div>
   </div>
 </section>

@@ -141,6 +141,7 @@ final class Content
                 'fields' => [
                     ['key' => 'footer_tagline', 'label' => 'Footer tagline', 'type' => 'textarea', 'default' => "The premier gathering for digital transformation in Nigeria's public service, organized by the Bureau of Public Service Reforms, The Presidency."],
                     ['key' => 'contact_email', 'label' => 'Contact email', 'type' => 'text', 'default' => 'info@govtechconference.ng'],
+                    ['key' => 'partnerships_email', 'label' => 'Partnerships email', 'type' => 'text', 'default' => 'partnerships@govtechconference.ng'],
                     ['key' => 'organizer_name', 'label' => 'Organiser name', 'type' => 'text', 'default' => 'Bureau of Public Service Reforms'],
                     ['key' => 'organizer_note', 'label' => 'Organiser note', 'type' => 'text', 'default' => 'Organized by the Presidency, Federal Republic of Nigeria'],
                     ['key' => 'social_linkedin', 'label' => 'LinkedIn URL', 'type' => 'text', 'default' => '#'],

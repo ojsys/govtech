@@ -17,6 +17,20 @@ final class TicketType extends Model
         );
     }
 
+    /**
+     * The single general-admission pass for this free event. The public site and
+     * registration present one pass; this resolves which row backs it — a featured
+     * active pass if set, otherwise the first active one by sort. Null if none.
+     */
+    public static function primary(): ?array
+    {
+        return Database::first(
+            'SELECT * FROM ticket_types WHERE event_id = ? AND is_active = 1
+             ORDER BY featured DESC, sort ASC, id ASC LIMIT 1',
+            [self::eventId()]
+        );
+    }
+
     public static function findActiveById(int $id): ?array
     {
         return Database::first(

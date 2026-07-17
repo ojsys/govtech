@@ -255,6 +255,27 @@ CREATE TABLE IF NOT EXISTS audit_log (
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
+-- Programme / agenda: the running order of the event, grouped by day and shown
+-- on the public /agenda page and managed from Admin → Agenda.
+CREATE TABLE IF NOT EXISTS agenda_sessions (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  event_id INT,
+  day_label VARCHAR(80),                -- e.g. "Day 1 · Tue, 7 Oct"
+  start_time VARCHAR(20),               -- e.g. "09:00"
+  end_time VARCHAR(20),                 -- e.g. "10:30"
+  title VARCHAR(200) NOT NULL,
+  description TEXT,
+  speaker VARCHAR(200),                 -- presenter / facilitator(s)
+  location VARCHAR(160),                -- room / hall
+  track VARCHAR(80),                    -- optional stream label
+  is_break TINYINT DEFAULT 0,           -- 1 = break/interlude (styled differently)
+  is_published TINYINT DEFAULT 1,
+  sort INT DEFAULT 0,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (event_id) REFERENCES events(id),
+  INDEX(event_id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
 SET FOREIGN_KEY_CHECKS = 1;
 
 -- ===========================================================================
